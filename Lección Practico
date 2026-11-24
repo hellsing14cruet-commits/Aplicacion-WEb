@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empresa XYZ · Registro (Simulador Android / Flutter)</title>
+  <style>
+    /*APLICO LOS ESTILOS GENERALES  */
+    :root {
+      --primary-green: #1b663e;
+      --primary-green-dark: #134d2e;
+      --accent-green-bg: #e7f3ec;
+      --accent-green-border: #2c7a51;
+      --bg-page: #eef2f6;
+      --card-white: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border-default: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+    }
+
+    /*la barra de las herramientas superior para pruebas rápidas */
+    .toolbar {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border: 1px solid #dce3ea;
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .toolbar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-green);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-tool {
+      border: none;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-tool:active {
+      transform: scale(0.97);
+    }
+
+    .btn-demo {
+      background-color: var(--accent-green-bg);
+      color: var(--primary-green);
+      border: 1px solid #b8dec8;
+    }
+
+    .btn-demo:hover {
+      background-color: #d6ecdf;
+    }
+
+    .btn-clear {
+      background-color: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-clear:hover {
+      background-color: #e5e7eb;
+    }
+
+    /* UN SIMULADOR DE TELÉFONO ANDROID */
+    .android-device {
+      width: 100%;
+      max-width: 390px;
+      background-color: #181a1f;
+      border-radius: 42px;
+      padding: 12px;
+      box-shadow:
+        0 24px 48px rgba(15, 23, 42, 0.22),
+        0 0 0 2px #32363f;
+      position: relative;
+    }
+
+    .android-screen {
+      background-color: #fafafa;
+      border-radius: 32px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 730px;
+    }
+
+    /* La Barra deL estado superior deL Android*/
+    .status-bar {
+      background-color: var(--primary-green-dark);
+      color: #ffffff;
+      height: 30px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .camera-punch {
+      width: 11px;
+      height: 11px;
+      background-color: #0b0c0e;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1.5px solid #2b2f36;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+
+    /* lOS WIDGETS DE FLUTTER*/
+    /* AppBar de Flutter */
+    .flutter-appbar {
+      background-color: var(--primary-green);
+      color: #ffffff;
+      padding: 16px 20px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    }
+
+    /* Body del Scaffold (SingleChildScrollView + Column) */
+    .flutter-body {
+      padding: 20px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      flex: 1;
+    }
+
+    /* Grupo de cada campo del formulario */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    /* Contenedor tipo TextField con OutlineInputBorder */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .flutter-textfield {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.93rem;
+      color: #111827;
+      background-color: #ffffff;
+      border: 1.6px solid var(--border-default);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .flutter-textfield::placeholder {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    /* Borde resaltado en verde cuando el campo está enfocado o tiene texto */
+    .flutter-textfield:focus,
+    .flutter-textfield.has-value {
+      border-color: var(--primary-green);
+      border-width: 2px;
+    }
+
+    .flutter-textfield:focus {
+      box-shadow: 0 0 0 3px rgba(27, 102, 62, 0.12);
+    }
+
+    /* Icono de calendario dentro del campo Fecha de nacimiento */
+    .date-picker-btn {
+      position: absolute;
+      right: 10px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 4px 7px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      color: #374151;
+      transition: background 0.2s ease;
+    }
+
+    .date-picker-btn:hover {
+      background: #e5e7eb;
+    }
+
+    /* Input date oculto vinculado al botón de calendario */
+    .hidden-date-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* Botón elevado de Flutter: ElevatedButton ("MOSTRAR DATOS") */
+    .flutter-button {
+      margin-top: 6px;
+      width: 100%;
+      background-color: var(--primary-green);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(27, 102, 62, 0.28);
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .flutter-button:hover {
+      background-color: var(--primary-green-dark);
+    }
+
+    .flutter-button:active {
+      transform: scale(0.985);
+    }
+
+    /* ÁREA DE LOS RESULTADOS*/
+    /* Estado inicial vacío (recuadro punteado) */
+    .result-placeholder {
+      margin-top: 6px;
+      border: 1.5px dashed #cbd5e1;
+      background-color: #f3f4f6;
+      border-radius: 10px;
+      padding: 26px 16px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    /*Estado activo tras presionar como MOSTRAR DATOS*/
+    .result-card {
+      margin-top: 6px;
+      border: 1.8px solid var(--accent-green-border);
+      background-color: var(--accent-green-bg);
+      border-radius: 10px;
+      padding: 14px 16px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .result-card-title {
+      color: var(--primary-green);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .result-card-line {
+      font-size: 0.87rem;
+      color: #1f2937;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .result-card-line strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* La barra de navegación inferior de Android*/
+    .android-navbar {
+      height: 22px;
+      background-color: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 6px;
+    }
+
+    .nav-pill {
+      width: 115px;
+      height: 4px;
+      background-color: #9ca3af;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- La barra de los controles rápidos para probar y capturar la pantalla -->
+  <div class="toolbar">
+    <span class="toolbar-title">Simulador Android · Flutter</span>
+    <div class="toolbar-actions">
+      <button type="button" class="btn-tool btn-demo" onclick="cargarDatosEjemplo()">
+        Cargar ejemplo
+      </button>
+      <button type="button" class="btn-tool btn-clear" onclick="limpiarFormulario()">
+        Reiniciar
+      </button>
+    </div>
+  </div>
+
+  <!-- El marco del dispositivo móvil Android -->
+  <main class="android-device" aria-label="Simulador de aplicación Android">
+    <div class="android-screen">
+
+      <!--La barra del estado superior de Android -->
+      <header class="status-bar">
+        <span id="reloj-android">18:45</span>
+        <div class="camera-punch" aria-hidden="true"></div>
+        <div class="status-icons" aria-hidden="true">
+          <span>5G</span>
+          <span>▮▮▮▮</span>
+          <span>100%</span>
+        </div>
+      </header>
+
+      <!-- El AppBar del Flutter: "Empresa XYZ · Registro" -->
+      <div class="flutter-appbar">
+        Empresa XYZ · Registro
+      </div>
+
+      <!-- Cuerpo del Scaffold: Formulario en Column -->
+      <section class="flutter-body">
+
+        <!-- Campo 1: Nombre completo (ctrlNombre) -->
+        <div class="field-group">
+          <label class="field-label" for="ctrlNombre">Nombre completo</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="ctrlNombre"
+              class="flutter-textfield"
+              placeholder="Ej.: Ana María Pérez López"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Campo 2: Dirección (ctrlDireccion) -->
+        <div class="field-group">
+          <label class="field-label" for="ctrlDireccion">Dirección</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="ctrlDireccion"
+              class="flutter-textfield"
+              placeholder="Ej.: Av. 25 de Julio y Pío Jaramillo"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Campo 3: Fecha de nacimiento (ctrlFecha) -->
+        <div class="field-group">
+          <label class="field-label" for="ctrlFecha">Fecha de nacimiento</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="ctrlFecha"
+              class="flutter-textfield"
+              placeholder="dd/mm/aaaa"
+              maxlength="10"
+              autocomplete="off"
+            />
+            <!-- Botón de selector de fecha visual -->
+            <button
+              type="button"
+              class="date-picker-btn"
+              title="Seleccionar fecha"
+              onclick="abrirCalendario()"
+            >
+            </button>
+            <input
+              type="date"
+              id="nativeDatePicker"
+              class="hidden-date-input"
+              onchange="sincronizarFechaDesdeCalendario(this.value)"
+            />
+          </div>
+        </div>
+
+        <!-- Campo 4: Cargo (ctrlCargo) -->
+        <div class="field-group">
+          <label class="field-label" for="ctrlCargo">Cargo</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="ctrlCargo"
+              class="flutter-textfield"
+              placeholder="Ej.: Asistente administrativo"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Botón principal (ElevatedButton -> onPressed) -->
+        <button
+          type="button"
+          class="flutter-button"
+          onclick="onPressedMostrarDatos()"
+        >
+          MOSTRAR DATOS
+        </button>
+
+        <!-- Contenedor dinámico que simula la actualización de estado (setState) -->
+        <div id="zonaResultado" class="result-placeholder">
+          Aquí se mostrarán los datos<br />al presionar el botón
+        </div>
+
+      </section>
+
+      <!-- Barra de gestos inferior de Android -->
+      <footer class="android-navbar" aria-hidden="true">
+        <div class="nav-pill"></div>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    /* CONTROLADORES DE TEXTO (Equivalente a TextEditingController en Flutter)*/
+    const ctrlNombre = document.getElementById('ctrlNombre');
+    const ctrlDireccion = document.getElementById('ctrlDireccion');
+    const ctrlFecha = document.getElementById('ctrlFecha');
+    const ctrlCargo = document.getElementById('ctrlCargo');
+    const zonaResultado = document.getElementById('zonaResultado');
+
+    const campos = [ctrlNombre, ctrlDireccion, ctrlFecha, ctrlCargo];
+
+    // Actualiza el estilo del borde verde cuando el usuario escribe en cada TextField
+    campos.forEach((campo) => {
+      campo.addEventListener('input', () => {
+        if (campo.value.trim().length > 0) {
+          campo.classList.add('has-value');
+        } else {
+          campo.classList.remove('has-value');
+        }
+      });
+    });
+
+    // El formato automático dd/mm/aaaa al escribir manualmente la fecha
+    ctrlFecha.addEventListener('input', (e) => {
+      let valor = e.target.value.replace(/\D/g, '');
+      if (valor.length > 2 && valor.length <= 4) {
+        valor = valor.slice(0, 2) + '/' + valor.slice(2);
+      } else if (valor.length > 4) {
+        valor = valor.slice(0, 2) + '/' + valor.slice(2, 4) + '/' + valor.slice(4, 8);
+      }
+      e.target.value = valor;
+    });
+
+    // Abre el selector de fecha nativo al presionar el icono de calendario
+    function abrirCalendario() {
+      const picker = document.getElementById('nativeDatePicker');
+      if (picker.showPicker) {
+        picker.showPicker();
+      } else {
+        picker.click();
+      }
+    }
+
+    // Convierte yyyy-mm-dd del selector nativo a dd/mm/aaaa
+    function sincronizarFechaDesdeCalendario(fechaISO) {
+      if (!fechaISO) return;
+      const [anio, mes, dia] = fechaISO.split('-');
+      ctrlFecha.value = `${dia}/${mes}/${anio}`;
+      ctrlFecha.classList.add('has-value');
+    }
+
+    /* LÓGICA DEL BOTÓN MOSTRAR DATOS*/
+    function onPressedMostrarDatos() {
+      // Leemos el texto ingresado en cada controlador (.text)
+      const nombre = ctrlNombre.value.trim();
+      const direccion = ctrlDireccion.value.trim();
+      const fecha = ctrlFecha.value.trim();
+      const cargo = ctrlCargo.value.trim();
+
+      // Validación básica para evitar mostrar una tarjeta completamente vacía
+      if (!nombre && !direccion && !fecha && !cargo) {
+        alert('Por favor, ingrese al menos un dato en el formulario.');
+        ctrlNombre.focus();
+        return;
+      }
+
+      // Refrescamos la interfaz (equivalente a setState(() { ... }) en Flutter)
+      zonaResultado.className = 'result-card';
+      zonaResultado.innerHTML = `
+        <div class="result-card-title">DATOS REGISTRADOS</div>
+        <div class="result-card-line"><strong>Nombre:</strong> ${escaparHTML(nombre || 'No especificado')}</div>
+        <div class="result-card-line"><strong>Dirección:</strong> ${escaparHTML(direccion || 'No especificada')}</div>
+        <div class="result-card-line"><strong>Nacimiento:</strong> ${escaparHTML(fecha || 'No especificada')}  ·  <strong>Cargo:</strong> ${escaparHTML(cargo || 'No especificado')}</div>
+      `;
+    }
+
+    // Función de utilidad para evitar inyección de código HTML en la vista previa
+    function escaparHTML(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+
+    /* FUNCIONES AUXILIARES DE PRUEBA*/
+    function cargarDatosEjemplo() {
+      ctrlNombre.value = 'Ana María Pérez López';
+      ctrlDireccion.value = 'Av. 25 de Julio y Pío Jaramillo';
+      ctrlFecha.value = '14/03/1999';
+      ctrlCargo.value = 'Asistente administrativo';
+
+      campos.forEach((campo) => campo.classList.add('has-value'));
+      onPressedMostrarDatos();
+    }
+
+    function limpiarFormulario() {
+      campos.forEach((campo) => {
+        campo.value = '';
+        campo.classList.remove('has-value');
+      });
+
+      zonaResultado.className = 'result-placeholder';
+      zonaResultado.innerHTML = 'Aquí se mostrarán los datos<br />al presionar el botón';
+    }
+
+    // Actualiza la hora real en la barra de estado del teléfono Android
+    function actualizarReloj() {
+      const ahora = new Date();
+      const horas = String(ahora.getHours()).padStart(2, '0');
+      const minutos = String(ahora.getMinutes()).padStart(2, '0');
+      document.getElementById('reloj-android').textContent = `${horas}:${minutos}`;
+    }
+
+    actualizarReloj();
+    setInterval(actualizarReloj, 30000);
+  </script>
+</body>
+</html>

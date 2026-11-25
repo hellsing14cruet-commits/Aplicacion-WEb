@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Empresa XYZ · Registro (Simulador Android / Flutter)</title>
   <style>
-    /* =========================================================================
+    /*
        ESTILOS GENERALES Y ENTORNO DE SIMULACIÓN ANDROID
-       ========================================================================= */
+    */
     :root {
       --primary-green: #1b663e;
       --primary-green-dark: #134d2e;
@@ -99,9 +99,9 @@
       background-color: #e5e7eb;
     }
 
-    /* =========================================================================
+    /* 
        CARCASA DE TELÉFONO ANDROID
-       ========================================================================= */
+    */
     .android-device {
       width: 100%;
       max-width: 390px;
@@ -155,9 +155,9 @@
       font-size: 0.72rem;
     }
 
-    /* =========================================================================
+    /* 
        WIDGETS DE FLUTTER: SCAFFOLD + APPBAR + COLUMN + TEXTFIELD + BUTTON
-       ========================================================================= */
+    */
     /* AppBar de Flutter */
     .flutter-appbar {
       background-color: var(--primary-green);
@@ -280,9 +280,9 @@
       transform: scale(0.985);
     }
 
-    /* =========================================================================
+    /*
        ÁREA DE RESULTADOS (REACTIVIDAD TIPO setState)
-       ========================================================================= */
+    */
     /* Estado inicial vacío (recuadro punteado) */
     .result-placeholder {
       margin-top: 6px;
@@ -491,9 +491,9 @@
   </main>
 
   <script>
-    /* =========================================================================
+    /* 
        CONTROLADORES DE TEXTO (Equivalente a TextEditingController en Flutter)
-       ========================================================================= */
+     */
     const ctrlNombre = document.getElementById('ctrlNombre');
     const ctrlDireccion = document.getElementById('ctrlDireccion');
     const ctrlFecha = document.getElementById('ctrlFecha');
@@ -542,9 +542,9 @@
       ctrlFecha.classList.add('has-value');
     }
 
-    /* =========================================================================
+    /* 
        LÓGICA DEL BOTÓN "MOSTRAR DATOS" (Equivalente a onPressed + setState())
-       ========================================================================= */
+   */
     function onPressedMostrarDatos() {
       // Leemos el texto ingresado en cada controlador (.text)
       const nombre = ctrlNombre.value.trim();
@@ -576,9 +576,9 @@
       return div.innerHTML;
     }
 
-    /* =========================================================================
+    /* 
        FUNCIONES AUXILIARES DE PRUEBA (Ejemplo del PDF y Reinicio)
-       ========================================================================= */
+    */
     function cargarDatosEjemplo() {
       ctrlNombre.value = 'Ana María Pérez López';
       ctrlDireccion.value = 'Av. 25 de Julio y Pío Jaramillo';
